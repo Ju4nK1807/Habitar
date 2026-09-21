@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Habita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Tokens de color */
+  --surface-000: #FBF8F4;
+  --surface-100: #FFFFFF;
+  --surface-300: #EAE2D6;
+  --ink-900: #1F1A14;
+  --ink-600: #5C5347;
+  --brand-600: #A8492A;
+  --brand-100: #F7E7DE;
+  --brand-ink: #8E3D22;
+  --accent-100: #E2EFE8;
+  --accent-ink: #235340;
+  --warning-100: #FBEFD9;
+  --warning-600: #8A5800;
+  --border-200: #E3DACD;
+  --border-400: #9C8E7B;
+
+  /* Radios */
+  --r-field: 8px;
+  --r-btn: 12px;
+  --r-card: 16px;
+  --r-chip: 999px;
+
+  /* Alturas */
+  --h-btn: 52px;
+  --h-field: 52px;
+  --h-icon: 44px;
+  --h-chip: 36px;
+
+  /* Retícula de 4px */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --gutter: 16px;
+
+  /* Tipografía */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Derivados de los tokens (ilustraciones y sombras) */
+  --wood-300: color-mix(in srgb, var(--warning-600) 32%, var(--surface-000));
+  --wood-500: color-mix(in srgb, var(--warning-600) 55%, var(--surface-300));
+  --wood-700: color-mix(in srgb, var(--warning-600) 70%, var(--ink-900));
+  --wall-a: color-mix(in srgb, var(--surface-300) 65%, var(--surface-100));
+  --wall-b: color-mix(in srgb, var(--accent-ink) 45%, var(--accent-100));
+  --wall-c: color-mix(in srgb, var(--brand-600) 18%, var(--brand-100));
+  --floor: color-mix(in srgb, var(--wood-300) 55%, var(--surface-300));
+  --shadow-phone: 0 32px 80px color-mix(in srgb, var(--ink-900) 28%, transparent),
+                  0 4px 16px color-mix(in srgb, var(--ink-900) 14%, transparent);
+  --shadow-card: 0 2px 8px color-mix(in srgb, var(--ink-900) 8%, transparent);
+  --shadow-float: 0 6px 16px color-mix(in srgb, var(--brand-600) 35%, transparent);
+  --stage: color-mix(in srgb, var(--ink-900) 8%, var(--surface-100));
+  --border-brand: color-mix(in srgb, var(--brand-600) 35%, var(--brand-100));
+}
+
+* { box-sizing: border-box; margin: 0; }
+[hidden] { display: none !important; }
+
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink-900);
+  background: var(--stage);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; text-align: inherit; }
+button:disabled { cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--brand-600); outline-offset: 2px; }
+h1, h2, h3, h4 { font-weight: inherit; }
+[tabindex="-1"]:focus { outline: none; }
+
+/* ---------- Marco del teléfono ---------- */
+.phone {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  flex: none;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--surface-000);
+  border-radius: 44px;
+  box-shadow: var(--shadow-phone);
+  border: 1px solid var(--border-200);
+}
+
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--surface-000); animation: enter .25s ease-out; }
+@keyframes enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 var(--gutter) var(--sp-6); scrollbar-width: none; }
+.body::-webkit-scrollbar { display: none; }
+.footer { padding: var(--sp-3) var(--gutter) var(--sp-5); background: var(--surface-000); display: flex; flex-direction: column; gap: var(--sp-2); }
+
+/* ---------- Iconos ---------- */
+.ico { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* ---------- Barra superior ---------- */
+.topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 60px; padding: var(--sp-2) var(--sp-2) 0; }
+.topbar h1 { font-size: 18px; font-weight: 600; text-align: center; }
+.topbar .end { justify-self: end; padding-right: var(--sp-2); }
+.icon-btn { width: var(--h-icon); height: var(--h-icon); border-radius: 50%; display: grid; place-items: center; }
+.icon-btn.on-photo { background: var(--surface-100); box-shadow: var(--shadow-card); }
+
+.credits { height: 32px; padding: 0 var(--sp-3); display: inline-flex; align-items: center; border-radius: var(--r-chip); background: var(--brand-100); border: 1px solid var(--border-brand); color: var(--brand-ink); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+
+/* ---------- Pasos ---------- */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); padding: var(--sp-2) var(--gutter) 0; }
+.steps span { height: 6px; border-radius: var(--r-chip); background: var(--surface-300); }
+.steps .f { background: var(--brand-600); }
+.steps .h { background: color-mix(in srgb, var(--brand-600) 70%, var(--surface-000)); }
+.steps-labels { display: flex; justify-content: space-between; padding: var(--sp-2) var(--gutter) 0; }
+.label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-600); }
+
+/* ---------- Tipografía ---------- */
+.display { font-family: var(--font-display); font-weight: 700; letter-spacing: -.01em; line-height: 1.1; }
+.title-xl { font-size: 36px; }
+.title-lg { font-size: 30px; }
+.title-md { font-size: 22px; }
+.muted { color: var(--ink-600); }
+
+/* ---------- Botones ---------- */
+.btn { width: 100%; height: var(--h-btn); border-radius: var(--r-btn); font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: var(--sp-2); border: 1.5px solid transparent; text-align: center; }
+.btn-primary { background: var(--brand-600); color: var(--surface-100); box-shadow: var(--shadow-card); }
+.btn-primary:disabled { opacity: .45; box-shadow: none; }
+.btn-outline { border-color: var(--border-400); color: var(--ink-900); }
+.btn-text { height: var(--h-icon); width: 100%; font-size: 14px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; text-align: center; color: var(--ink-600); }
+.btn-text.brand { color: var(--brand-600); }
+.pill { display: inline-flex; align-items: center; height: 24px; padding: 0 var(--sp-2); border-radius: var(--r-chip); background: var(--brand-100); color: var(--brand-ink); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+
+/* ---------- Chips ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-3) var(--sp-2); }
+.chip { height: var(--h-chip); padding: 0 var(--sp-4); border-radius: var(--r-chip); border: 1.5px solid var(--border-200); background: var(--surface-100); color: var(--ink-600); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; white-space: nowrap; flex: none; }
+.chip[aria-pressed="true"] { background: var(--brand-600); border-color: var(--brand-600); color: var(--surface-100); }
+.chips.soft .chip[aria-pressed="true"] { background: var(--brand-100); border-color: var(--border-brand); color: var(--brand-ink); font-weight: 700; }
+
+/* ---------- Campos ---------- */
+.field-label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-600); margin-bottom: var(--sp-2); }
+.field { display: flex; align-items: center; height: var(--h-field); padding: 0 var(--sp-4); border: 1.5px solid var(--border-400); border-radius: var(--r-field); background: var(--surface-100); }
+.field:focus-within { border-color: var(--brand-600); }
+.field input { flex: 1; width: 100%; min-width: 0; border: 0; outline: 0; background: none; font: 700 18px var(--font-body); color: var(--ink-900); }
+.field .unit { color: var(--ink-600); font-size: 18px; }
+.field.invalid { border-color: var(--brand-600); }
+.error { color: var(--brand-ink); font-size: 14px; margin-top: var(--sp-2); }
+
+.textarea-wrap { position: relative; }
+.textarea-wrap textarea { width: 100%; height: 160px; resize: none; padding: var(--sp-4) var(--sp-4) var(--sp-8); border: 1.5px solid var(--border-400); border-radius: var(--r-field); background: var(--surface-100); font: 400 18px/1.45 var(--font-body); color: var(--ink-900); outline: 0; }
+.textarea-wrap textarea:focus { border-color: var(--brand-600); }
+.counter { position: absolute; right: var(--sp-4); bottom: var(--sp-3); font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--ink-600); }
+
+.section { margin-top: var(--sp-6); }
+.section > .display, .section > h2 { margin-bottom: var(--sp-3); }
+.section-title { font-size: 20px; font-weight: 500; margin-bottom: var(--sp-4); }
+
+/* ---------- Opciones (espacio) ---------- */
+.options { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: var(--sp-6); }
+.opt { display: flex; align-items: center; gap: var(--sp-4); padding: var(--sp-4); border: 1.5px solid var(--border-200); border-radius: var(--r-card); background: var(--surface-100); }
+.opt[aria-pressed="true"] { border-color: var(--brand-600); box-shadow: 0 0 0 1px var(--brand-600); }
+.opt-icon { width: 48px; height: 48px; border-radius: var(--r-btn); background: var(--brand-100); color: var(--brand-600); display: grid; place-items: center; flex: none; }
+.opt strong { display: block; font-size: 18px; font-weight: 600; }
+.opt span.sub { display: block; font-size: 16px; color: var(--ink-600); margin-top: 2px; }
+
+/* ---------- Referencias ---------- */
+.refs { display: flex; gap: var(--sp-3); }
+.ref { width: 72px; height: 72px; border-radius: var(--r-card); border: 2px dashed var(--border-200); background: var(--surface-100) center / cover no-repeat; display: grid; place-items: center; color: var(--ink-600); }
+.ref.has { border-style: solid; }
+.ref.has .ico { display: none; }
+
+/* ---------- Inicio ---------- */
+.home-head { display: flex; justify-content: space-between; align-items: center; padding-top: var(--sp-4); }
+.home-head .icon-btn { margin-right: calc(var(--sp-2) * -1); }
+.resume { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: var(--sp-4); padding: var(--sp-4); border-radius: var(--r-card); background: var(--brand-100); border: 1px solid var(--border-brand); }
+.resume strong { display: block; font-size: 18px; font-weight: 700; color: var(--brand-ink); }
+.resume span.sub { display: block; font-size: 16px; color: var(--brand-600); margin-top: 2px; }
+.resume .open { font-weight: 700; font-size: 18px; color: var(--brand-ink); }
+.row-head { display: flex; justify-content: space-between; align-items: baseline; margin: var(--sp-8) 0 var(--sp-3); }
+.row-head h2 { font-size: 22px; font-weight: 700; }
+.link { font-size: 14px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--brand-600); }
+.spaces { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-3); }
+.space { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2); font-size: 16px; color: var(--ink-600); }
+.space .thumb { width: 100%; aspect-ratio: 1; border-radius: var(--r-card); overflow: hidden; border: 1px solid var(--border-200); background: var(--surface-100); display: grid; place-items: center; }
+.space.new .thumb { border: 2px dashed var(--border-200); background: none; color: var(--ink-600); }
+.stack { display: flex; flex-direction: column; gap: var(--sp-4); }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-3); }
+
+.tabbar { position: relative; display: grid; grid-template-columns: 1fr 1fr 88px 1fr 1fr; align-items: end; height: 76px; padding: 0 var(--sp-2) var(--sp-3); background: var(--surface-100); border-top: 1px solid var(--border-200); }
+.tab { display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); min-height: var(--h-icon); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-600); }
+.tab[aria-current="page"] { color: var(--brand-600); }
+.tab[aria-current="page"] .ico { fill: currentColor; }
+.fab { position: absolute; left: 50%; top: -28px; transform: translateX(-50%); width: 64px; height: 64px; border-radius: 50%; background: var(--brand-600); color: var(--surface-100); display: grid; place-items: center; border: 4px solid var(--surface-100); box-shadow: var(--shadow-float); }
+.fab .ico { width: 32px; height: 32px; }
+
+/* ---------- Tarjetas de mueble ---------- */
+.card { display: flex; flex-direction: column; width: 100%; background: var(--surface-100); border: 1px solid var(--border-200); border-radius: var(--r-card); overflow: hidden; box-shadow: var(--shadow-card); text-align: left; }
+.card-media { position: relative; aspect-ratio: 1.3; overflow: hidden; }
+.card-media .scene, .hero .scene { width: 100%; height: 100%; display: block; }
+.badge-ia { position: absolute; top: var(--sp-2); left: var(--sp-2); height: 24px; padding: 0 var(--sp-2); border-radius: var(--r-chip); background: var(--accent-100); color: var(--accent-ink); font-size: 12px; font-weight: 700; letter-spacing: .04em; display: inline-flex; align-items: center; }
+.card-body { padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-1); }
+.card-body h3 { font-size: 16px; font-weight: 600; }
+.card-body .meta { font-size: 14px; color: var(--ink-600); }
+.price { display: flex; align-items: baseline; gap: var(--sp-1); margin-top: var(--sp-2); font-size: 14px; color: var(--ink-600); }
+.price strong { font-size: 20px; font-weight: 700; color: var(--brand-600); }
+.card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: var(--sp-1); }
+.card-foot .price { margin: 0; }
+.card-body > .tag { align-self: flex-start; margin-top: var(--sp-2); }
+.tag { display: inline-flex; align-items: center; height: 28px; padding: 0 var(--sp-3); border-radius: var(--r-chip); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.tag.ok { background: var(--accent-100); color: var(--accent-ink); }
+.tag.warn { background: var(--warning-100); color: var(--warning-600); }
+
+/* ---------- Ilustraciones ---------- */
+.s-wall-a { fill: var(--wall-a); } .s-wall-b { fill: var(--wall-b); } .s-wall-c { fill: var(--wall-c); }
+.s-floor { fill: var(--floor); }
+.s-shade { fill: var(--ink-900); opacity: .1; }
+.s-w1 { fill: var(--wood-300); } .s-w2 { fill: var(--wood-500); } .s-w3 { fill: var(--wood-700); }
+.s-in { fill: var(--surface-000); opacity: .85; }
+.s-k1 { fill: var(--ink-900); } .s-k2 { fill: var(--brand-600); } .s-k3 { fill: var(--surface-100); } .s-k4 { fill: var(--ink-600); }
+.s-leaf { fill: var(--accent-ink); } .s-vase { fill: var(--surface-100); } .s-sofa { fill: var(--surface-300); } .s-glass { fill: var(--accent-100); }
+
+/* ---------- Resultados ---------- */
+.res-head { padding: var(--sp-2) var(--sp-2) 0; display: flex; align-items: center; gap: var(--sp-2); height: 60px; }
+.res-head h1 { flex: 1; font-size: 28px; }
+.res-sub { padding: 0 var(--gutter); font-size: 16px; color: var(--ink-600); margin-top: var(--sp-1); }
+.filters { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-4) var(--gutter); scrollbar-width: none; }
+.filters::-webkit-scrollbar { display: none; }
+
+/* ---------- Generando ---------- */
+.skel { background: var(--surface-100); border: 1px solid var(--border-200); border-radius: var(--r-card); padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2); }
+.sk { border-radius: var(--r-field); background: var(--surface-300); position: relative; overflow: hidden; }
+.sk::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--surface-100) 70%, transparent), transparent); transform: translateX(-100%); animation: shimmer 1.4s infinite; }
+@keyframes shimmer { to { transform: translateX(100%); } }
+.sk.img { aspect-ratio: 1.3; border-radius: var(--r-btn); margin-bottom: var(--sp-2); }
+.sk.l { height: 12px; }
+.center { text-align: center; }
+.gen-msg { font-size: 16px; color: var(--ink-600); }
+.gen-sub { font-size: 14px; color: var(--ink-600); opacity: .8; margin-top: var(--sp-2); }
+
+/* ---------- Detalle ---------- */
+.hero { position: relative; height: 300px; overflow: hidden; }
+.hero-actions { position: absolute; z-index: 5; top: var(--sp-4); left: var(--sp-4); right: var(--sp-4); display: flex; justify-content: space-between; }
+.hero-actions .group { display: flex; gap: var(--sp-2); }
+.sheet { padding: var(--sp-6) var(--gutter) var(--sp-4); }
+.sheet h1 { font-size: 32px; }
+.badge-ai { display: inline-flex; align-items: center; height: 24px; padding: 0 var(--sp-3); margin-top: var(--sp-3); border-radius: var(--r-chip); background: var(--accent-100); color: var(--accent-ink); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.sub-line { font-size: 18px; color: var(--ink-600); margin-top: var(--sp-3); }
+.price-row { display: flex; align-items: center; gap: var(--sp-3); margin-top: var(--sp-2); }
+.price-row .big { font-size: 32px; font-weight: 700; color: var(--brand-600); }
+.price-row .est { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-600); line-height: 1.4; width: 72px; }
+.fit { margin-left: auto; display: inline-flex; align-items: center; gap: var(--sp-2); min-height: 52px; padding: var(--sp-2) var(--sp-4); border-radius: var(--r-chip); font-size: 14px; font-weight: 600; line-height: 1.3; max-width: 160px; }
+.fit .ico { width: 16px; height: 16px; stroke-width: 2.5; }
+.fit.ok { background: var(--accent-100); color: var(--accent-ink); }
+.fit.warn { background: var(--warning-100); color: var(--warning-600); }
+.thumbs { display: flex; gap: var(--sp-3); margin-top: var(--sp-5); }
+.thumbs button { width: 72px; height: 72px; border-radius: var(--r-card); overflow: hidden; border: 2px solid var(--border-200); }
+.thumbs button[aria-pressed="true"] { border-color: var(--brand-600); }
+.thumbs .scene { width: 100%; height: 100%; display: block; }
+.spec-title { margin-top: var(--sp-6); }
+.spec { margin-top: var(--sp-3); border-top: 1px solid var(--border-200); }
+.spec div { display: flex; justify-content: space-between; align-items: center; gap: var(--sp-4); min-height: 52px; border-bottom: 1px solid var(--border-200); font-size: 16px; }
+.spec dt { color: var(--ink-600); }
+.spec dd { font-weight: 600; text-align: right; }
+.footer.bordered { border-top: 1px solid var(--border-200); }
+
+/* ---------- Aviso ---------- */
+.toast { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 96px; z-index: 10; display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); border-radius: var(--r-btn); background: var(--ink-900); color: var(--surface-000); font-size: 14px; font-weight: 500; box-shadow: var(--shadow-phone); opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity .2s, transform .2s; }
+.toast.show { opacity: 1; transform: none; }
+.toast .ico { color: var(--accent-100); width: 20px; height: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation: none; }
+  .sk::after { animation: none; }
+  .toast { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sprite de iconos -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M9 4L7.2 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.2L15 4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 12l9-5M12 12v10M12 12L3 7"/></symbol>
+  <symbol id="i-images" viewBox="0 0 24 24"><rect x="6" y="3" width="15" height="14" rx="2"/><path d="M3 7v12a2 2 0 0 0 2 2h12M8 14l3-3 3 3 2-2 3 3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></symbol>
+</svg>
+
+<main class="phone" id="phone">
+
+  <!-- 1. INICIO -->
+  <section class="screen" id="inicio" aria-label="Inicio">
+    <div class="body">
+      <div class="home-head">
+        <span class="label" id="fecha"></span>
+        <button class="icon-btn" data-soon aria-label="Notificaciones"><svg class="ico"><use href="#i-bell"/></svg></button>
+      </div>
+      <h1 class="display title-xl" tabindex="-1" style="margin-top: var(--sp-2)">Buenas, Camilo</h1>
+
+      <button class="resume" data-action="continuar">
+        <span><strong>Continúa diseñando</strong><span class="sub">Biblioteca para el salón</span></span>
+        <span class="open">Abrir</span>
+      </button>
+
+      <div class="row-head"><h2>Mis espacios</h2><button class="link" data-soon>Ver todos</button></div>
+      <div class="spaces">
+        <button class="space" data-go="espacio"><span class="thumb" id="th-salon"></span>Salón</button>
+        <button class="space" data-go="espacio"><span class="thumb" id="th-estudio"></span>Estudio</button>
+        <button class="space new" data-go="espacio"><span class="thumb"><svg class="ico"><use href="#i-plus"/></svg></span>Nuevo</button>
+      </div>
+
+      <div class="row-head"><h2>Generaciones recientes</h2><button class="link" data-soon>Ver todas</button></div>
+      <div class="grid-2" id="home-cards"></div>
+    </div>
+
+    <nav class="tabbar" aria-label="Principal">
+      <button class="tab" aria-current="page"><svg class="ico"><use href="#i-home"/></svg>Inicio</button>
+      <button class="tab" data-soon><svg class="ico"><use href="#i-search"/></svg>Explorar</button>
+      <button class="fab" data-go="espacio" aria-label="Nuevo diseño"><svg class="ico"><use href="#i-plus"/></svg></button>
+      <span></span>
+      <button class="tab" data-soon><svg class="ico"><use href="#i-folder"/></svg>Proyectos</button>
+      <button class="tab" data-soon><svg class="ico"><use href="#i-user"/></svg>Perfil</button>
+    </nav>
+  </section>
+
+  <!-- 2. ESPACIO -->
+  <section class="screen" id="espacio" aria-label="Espacio" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-go="inicio" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button>
+      <h1>Espacio</h1>
+      <span></span>
+    </header>
+    <div class="steps" data-states="f,e,e,e"></div>
+    <div class="steps-labels"><span class="label">Paso 1 de 4</span><span class="label">Ubicación</span></div>
+    <div class="body">
+      <h2 class="display title-lg" tabindex="-1" style="margin-top: var(--sp-6)">¿Dónde irá el mueble?</h2>
+      <div class="options" data-group="espacio">
+        <button class="opt" data-value="foto" aria-pressed="false">
+          <span class="opt-icon"><svg class="ico"><use href="#i-camera"/></svg></span>
+          <span><strong>Tomar foto</strong><span class="sub">Captura tu espacio ahora</span></span>
+        </button>
+        <button class="opt" data-value="lidar" aria-pressed="false">
+          <span class="opt-icon"><svg class="ico"><use href="#i-cube"/></svg></span>
+          <span><strong>Escanear espacio (Lidar)</strong><span class="sub">Mapeo 3D de alta precisión</span></span>
+        </button>
+        <button class="opt" data-value="galeria" aria-pressed="false">
+          <span class="opt-icon"><svg class="ico"><use href="#i-images"/></svg></span>
+          <span><strong>Elegir espacio guardado</strong><span class="sub">Usa fotos de tu galería</span></span>
+        </button>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn-text" data-go="necesidades">Omitir</button>
+      <button class="btn btn-primary" data-go="necesidades">Continuar</button>
+    </div>
+  </section>
+
+  <!-- 3. NECESIDADES -->
+  <section class="screen" id="necesidades" aria-label="Qué necesita" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-go="espacio" aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button>
+      <h1>Qué necesita</h1>
+      <span class="end"><span class="credits" id="credits-pill"></span></span>
+    </header>
+    <div class="steps" data-states="f,h,e,e"></div>
+    <div class="steps-labels"><span class="label">Paso 2 de 4</span><span class="label">Qué necesita</span></div>
+    <div class="body">
+      <div class="section" style="margin-top: var(--sp-5)">
+        <h2 class="display title-md" tabindex="-1">¿Qué tipo de mueble es?</h2>
+        <div class="chips soft" data-group="tipo">
+          <button class="chip" data-value="Mesa" aria-pressed="false">Mesa</button>
+          <button class="chip" data-value="Biblioteca" aria-pressed="true">Biblioteca</button>
+          <button class="chip" data-value="Armario" aria-pressed="false">Armario</button>
+          <button class="chip" data-value="Estantería" aria-pressed="false">Estantería</button>
+          <button class="chip" data-value="Escritorio" aria-pressed="false">Escritorio</button>
+        </div>
+      </div>
+      <div class="section">
+        <h2 class="display title-md"><label for="desc">Describe el mueble</label></h2>
+        <div class="textarea-wrap">
+          <textarea id="desc" maxlength="280"></textarea>
+          <span class="counter" id="desc-count" aria-live="off"></span>
+        </div>
+      </div>
+      <div class="section">
+        <h2 class="display title-md">Referencias (opcional)</h2>
+        <div class="refs">
+          <label class="ref" tabindex="0" aria-label="Añadir referencia 1"><svg class="ico"><use href="#i-plus"/></svg><input type="file" accept="image/*" hidden></label>
+          <label class="ref" tabindex="0" aria-label="Añadir referencia 2"><svg class="ico"><use href="#i-plus"/></svg><input type="file" accept="image/*" hidden></label>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-primary" data-go="restricciones" id="btn-necesidades">Continuar</button>
+    </div>
+  </section>
+
+  <!-- 4. RESTRICCIONES -->
+  <section class="screen" id="restricciones" aria-label="Restricciones" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-go="necesidades" aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button>
+      <h1>Restricciones</h1>
+      <span></span>
+    </header>
+    <div class="steps" data-states="f,f,f,e"></div>
+    <div class="body">
+      <h2 class="section-title" tabindex="-1" style="margin-top: var(--sp-6)">Medidas máximas</h2>
+      <div class="stack">
+        <div>
+          <label class="field-label" for="ancho">Ancho</label>
+          <div class="field" id="f-ancho"><input id="ancho" inputmode="decimal" autocomplete="off" aria-describedby="err-medidas"><span class="unit">m</span></div>
+        </div>
+        <div>
+          <label class="field-label" for="alto">Alto</label>
+          <div class="field" id="f-alto"><input id="alto" inputmode="decimal" autocomplete="off" aria-describedby="err-medidas"><span class="unit">m</span></div>
+        </div>
+      </div>
+      <p class="error" id="err-medidas" role="alert" hidden>Introduce medidas entre 0,30 y 10 m.</p>
+
+      <h2 class="section-title" style="margin-top: var(--sp-8)">Material preferido</h2>
+      <div class="chips" data-group="material">
+        <button class="chip" data-value="Roble" aria-pressed="true">Roble</button>
+        <button class="chip" data-value="Nogal" aria-pressed="false">Nogal</button>
+        <button class="chip" data-value="Pino" aria-pressed="false">Pino</button>
+        <button class="chip" data-value="Fresno" aria-pressed="false">Fresno</button>
+      </div>
+
+      <h2 class="section-title" style="margin-top: var(--sp-8)">Presupuesto aproximado</h2>
+      <div class="chips" data-group="presupuesto">
+        <button class="chip" data-value="100 - 300€" aria-pressed="false">100 - 300€</button>
+        <button class="chip" data-value="300 - 600€" aria-pressed="true">300 - 600€</button>
+        <button class="chip" data-value="600€+" aria-pressed="false">600€+</button>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-primary" data-action="generar">Generar 4 propuestas · 1 crédito</button>
+    </div>
+  </section>
+
+  <!-- 5. GENERANDO -->
+  <section class="screen" id="generando" aria-label="Generando" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-action="cancelar" aria-label="Cancelar"><svg class="ico"><use href="#i-x"/></svg></button>
+      <h1 tabindex="-1">Diseñando</h1>
+      <span></span>
+    </header>
+    <div class="steps" id="gen-steps"></div>
+    <div class="steps-labels"><span class="label">Procesando</span><span class="label" id="gen-paso"></span></div>
+    <div class="body">
+      <div class="grid-2" style="margin-top: var(--sp-6)" aria-hidden="true">
+        <div class="skel"><div class="sk img"></div><div class="sk l" style="width:72%"></div><div class="sk l" style="width:48%"></div><div class="sk l" style="width:36%"></div></div>
+        <div class="skel"><div class="sk img"></div><div class="sk l" style="width:60%"></div><div class="sk l" style="width:36%"></div><div class="sk l" style="width:52%"></div></div>
+        <div class="skel"><div class="sk img"></div><div class="sk l" style="width:84%"></div><div class="sk l" style="width:48%"></div><div class="sk l" style="width:36%"></div></div>
+        <div class="skel"><div class="sk img"></div><div class="sk l" style="width:48%"></div><div class="sk l" style="width:80%"></div><div class="sk l" style="width:40%"></div></div>
+      </div>
+    </div>
+    <div class="footer center" style="padding-bottom: var(--sp-8)">
+      <div role="status" aria-live="polite"><p class="gen-msg" id="gen-msg"></p><p class="gen-sub">Toma unos 20 segundos</p></div>
+      <button class="btn-text brand" data-action="cancelar" style="margin-top: var(--sp-3)">Cancelar</button>
+    </div>
+  </section>
+
+  <!-- 6. RESULTADOS -->
+  <section class="screen" id="resultados" aria-label="Resultados" hidden>
+    <header class="res-head">
+      <button class="icon-btn" data-go="inicio" aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button>
+      <h1 class="display" tabindex="-1">4 propuestas</h1>
+      <button class="icon-btn" data-soon aria-label="Más opciones"><svg class="ico"><use href="#i-more"/></svg></button>
+    </header>
+    <p class="res-sub" id="res-sub"></p>
+    <div class="filters" data-group="filtro" role="group" aria-label="Ordenar propuestas">
+      <button class="chip" data-value="todas" aria-pressed="true">Todas</button>
+      <button class="chip" data-value="baratas" aria-pressed="false">Más baratas</button>
+      <button class="chip" data-value="rapidas" aria-pressed="false">Más rápidas</button>
+      <button class="chip" data-value="ajuste" aria-pressed="false">Mejor ajuste</button>
+    </div>
+    <div class="body">
+      <div class="grid-2" id="res-cards"></div>
+      <button class="btn btn-outline" data-action="regenerar" style="margin-top: var(--sp-6)">Generar otras cuatro <span class="pill">· 1 crédito</span></button>
+    </div>
+  </section>
+
+  <!-- 7. DETALLE -->
+  <section class="screen" id="detalle" aria-label="Detalle" hidden>
+        <div class="hero-actions">
+          <button class="icon-btn on-photo" data-action="atras-detalle" aria-label="Atrás"><svg class="ico"><use href="#i-back"/></svg></button>
+          <div class="group">
+            <button class="icon-btn on-photo" data-soon aria-label="Favorito"><svg class="ico"><use href="#i-heart"/></svg></button>
+            <button class="icon-btn on-photo" data-soon aria-label="Compartir"><svg class="ico"><use href="#i-share"/></svg></button>
+          </div>
+        </div>
+    <div class="body" style="padding: 0">
+      <div class="hero" id="hero">
+      </div>
+      <div class="sheet">
+        <h1 class="display" id="d-nombre" tabindex="-1"></h1>
+        <span class="badge-ai">Generado con IA</span>
+        <p class="sub-line" id="d-sub"></p>
+        <div class="price-row">
+          <span class="big" id="d-precio"></span>
+          <span class="est">Precio estimado</span>
+          <span class="fit ok" id="d-fit"></span>
+        </div>
+        <div class="thumbs" id="d-thumbs"></div>
+        <h2 class="label spec-title">Ficha técnica</h2>
+        <dl class="spec" id="d-spec"></dl>
+      </div>
+    </div>
+    <div class="footer bordered">
+      <button class="btn btn-primary" data-action="guardar">Guardar en proyecto</button>
+      <button class="btn btn-outline" data-action="ver-espacio">Ver en mi espacio</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ico"><use href="#i-check"/></svg><span id="toast-msg"></span></div>
+</main>
+
+<script>
+'use strict';
+
+/* ================= Datos ================= */
+const ITEMS = {
+  altea:   { nombre: 'Biblioteca Altea', mat: 'Roble', meta: '240×80cm', w: 240, h: 80, dims: '240 × 80 × 35 cm', precio: 480, envio: '3-4 semanas', semanas: 3, kind: 'sideboard' },
+  linear:  { nombre: 'Módulo Linear',    mat: 'Roble', meta: '244×75cm', w: 244, h: 75, dims: '244 × 75 × 35 cm', precio: 520, envio: '2-3 semanas', semanas: 2, kind: 'grid' },
+  horizon: { nombre: 'Horizon Oak',      mat: 'Roble', meta: '238×90cm', w: 238, h: 90, dims: '238 × 90 × 40 cm', precio: 450, envio: '4-5 semanas', semanas: 4, kind: 'cubby' },
+  nara:    { nombre: 'Consola Nara',     mat: 'Roble', meta: '240×85cm', w: 240, h: 85, dims: '240 × 85 × 38 cm', precio: 590, envio: '3-4 semanas', semanas: 3, kind: 'console' },
+  denia:   { nombre: 'Mesa Dénia',       mat: 'Nogal', meta: '180×90cm', w: 180, h: 75, dims: '180 × 75 × 90 cm', precio: 620, envio: '4-6 semanas', semanas: 4, kind: 'table' }
+};
+const RESULT_IDS = ['altea', 'linear', 'horizon', 'nara'];
+const HOME_IDS = ['altea', 'denia'];
+
+const state = {
+  credits: 7,
+  espacio: null,
+  tipo: 'Biblioteca',
+  desc: 'Una biblioteca de madera clara para el salón, con espacio para tocadiscos y unos 200 vinilos. Prefiero líneas minimalistas y sin tiradores vistos.',
+  ancho: 2.4,
+  alto: 0.9,
+  material: 'Roble',
+  presupuesto: '300 - 600€',
+  filtro: 'todas',
+  itemId: null,
+  vista: 0,
+  origen: 'inicio'
+};
+
+/* ================= Utilidades ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const fmtM = n => n.toFixed(2).replace('.', ',');
+const parseM = s => Number(String(s).trim().replace(',', '.'));
+const eur = n => n + '€';
+
+function fit(item) {
+  const over = Math.round(Math.max(item.w - state.ancho * 100, item.h - state.alto * 100));
+  return over <= 0
+    ? { ok: true, corto: 'Cabe', largo: 'Cabe perfectamente' }
+    : { ok: false, corto: over + ' cm', largo: 'Excede ' + over + ' cm' };
+}
+
+/* ================= Ilustraciones ================= */
+const B = (cls, x, y, w, h) => `<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+const SCENES = {
+  sideboard: `
+    ${B('s-shade', 40, 186, 220, 6)}
+    ${B('s-w3', 66, 186, 6, 12)}${B('s-w3', 228, 186, 6, 12)}
+    ${B('s-w2', 44, 124, 212, 64)}
+    ${B('s-w1', 48, 128, 66, 56)}${B('s-w1', 118, 128, 66, 56)}${B('s-w1', 188, 128, 64, 56)}
+    ${B('s-w2', 176, 56, 60, 68)}${B('s-in', 180, 60, 52, 60)}${B('s-w2', 180, 90, 52, 3)}
+    ${B('s-k1', 184, 70, 5, 20)}${B('s-k2', 190, 74, 5, 16)}${B('s-k3', 196, 68, 5, 22)}${B('s-k4', 202, 72, 5, 18)}
+    ${B('s-k3', 184, 100, 20, 4)}${B('s-k1', 184, 104, 20, 4)}${B('s-k2', 208, 108, 18, 4)}${B('s-k3', 208, 104, 18, 4)}
+    <ellipse class="s-vase" cx="80" cy="112" rx="8" ry="12"/>
+    <path d="M80 100 L78 80 M80 100 L86 82 M80 100 L74 86" stroke="var(--wood-700)" stroke-width="1.5" fill="none"/>`,
+  grid: `
+    ${B('s-w2', 50, 16, 200, 174)}${B('s-in', 55, 21, 190, 164)}
+    ${B('s-w2', 101, 21, 5, 164)}${B('s-w2', 150, 21, 5, 164)}${B('s-w2', 199, 21, 5, 164)}
+    ${B('s-w2', 55, 62, 190, 5)}${B('s-w2', 55, 104, 190, 5)}${B('s-w2', 55, 146, 190, 5)}
+    ${B('s-k3', 60, 54, 30, 8)}${B('s-k4', 108, 96, 8, 8)}${B('s-k1', 118, 92, 6, 12)}${B('s-k2', 126, 94, 6, 10)}
+    ${B('s-k3', 160, 138, 30, 8)}${B('s-k1', 208, 46, 6, 16)}${B('s-k2', 216, 48, 6, 14)}${B('s-k4', 62, 130, 6, 16)}${B('s-k1', 70, 134, 6, 12)}
+    ${B('s-k2', 160, 96, 6, 8)}${B('s-k3', 208, 138, 28, 8)}`,
+  cubby: `
+    ${B('s-w2', 44, 24, 138, 166)}${B('s-in', 49, 29, 128, 156)}
+    ${B('s-w2', 89, 29, 5, 156)}${B('s-w2', 132, 29, 5, 156)}
+    ${B('s-w2', 49, 68, 128, 5)}${B('s-w2', 49, 108, 128, 5)}${B('s-w2', 49, 148, 128, 5)}
+    ${B('s-k1', 52, 46, 7, 22)}${B('s-k2', 60, 52, 6, 16)}${B('s-k3', 96, 126, 26, 8)}${B('s-k4', 140, 86, 6, 22)}${B('s-k1', 148, 90, 7, 18)}
+    ${B('s-k3', 52, 132, 30, 6)}${B('s-k2', 96, 92, 6, 16)}
+    ${B('s-w1', 182, 12, 76, 178)}${B('s-w3', 188, 100, 3, 24)}
+    <path d="M220 12 V190" stroke="var(--wood-500)" stroke-width="1.5"/>`,
+  console: `
+    ${B('s-shade', 30, 184, 240, 6)}
+    ${B('s-w3', 44, 180, 6, 14)}${B('s-w3', 250, 180, 6, 14)}
+    ${B('s-w2', 30, 128, 240, 54)}
+    ${B('s-w1', 34, 132, 76, 46)}${B('s-w1', 114, 132, 76, 46)}${B('s-w1', 194, 132, 72, 46)}
+    <ellipse class="s-leaf" cx="70" cy="90" rx="9" ry="20" transform="rotate(-20 70 90)"/>
+    <ellipse class="s-leaf" cx="86" cy="88" rx="8" ry="18" transform="rotate(25 86 88)"/>
+    ${B('s-vase', 72, 108, 14, 20)}
+    ${B('s-k1', 200, 116, 26, 6)}${B('s-k2', 202, 110, 24, 6)}${B('s-k3', 200, 104, 26, 6)}`,
+  table: `
+    ${B('s-shade', 70, 186, 160, 6)}
+    <path class="s-w3" d="M36 118 H264 L276 134 H24 Z"/>
+    ${B('s-w2', 24, 134, 252, 8)}
+    ${B('s-w3', 140, 142, 20, 46)}${B('s-w3', 112, 184, 76, 6)}
+    ${B('s-w2', 18, 84, 7, 70)}${B('s-w2', 18, 122, 34, 7)}${B('s-w2', 275, 84, 7, 70)}${B('s-w2', 248, 122, 34, 7)}
+    <ellipse class="s-vase" cx="150" cy="108" rx="9" ry="11"/>
+    <ellipse class="s-leaf" cx="150" cy="88" rx="6" ry="14"/>`,
+  living: `
+    ${B('s-glass', 190, 24, 84, 90)}${B('s-w3', 230, 24, 3, 90)}
+    ${B('s-sofa', 30, 120, 180, 50)}${B('s-sofa', 30, 96, 180, 34)}${B('s-w2', 22, 108, 16, 64)}${B('s-w2', 202, 108, 16, 64)}
+    ${B('s-w3', 40, 180, 200, 8)}`,
+  study: `
+    ${B('s-w2', 30, 120, 150, 8)}${B('s-w2', 40, 128, 6, 62)}${B('s-w2', 164, 128, 6, 62)}
+    ${B('s-k1', 90, 82, 44, 30)}${B('s-in', 92, 84, 40, 26)}${B('s-k4', 108, 112, 8, 8)}
+    ${B('s-in', 170, 150, 110, 50)}${B('s-sofa', 170, 142, 110, 12)}`
+};
+function scene(kind, wall = 'a') {
+  return `<svg class="scene" viewBox="0 0 300 230" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect class="s-wall-${wall}" width="300" height="230"/>
+    <rect class="s-floor" y="190" width="300" height="40"/>
+    ${SCENES[kind]}
+  </svg>`;
+}
+
+/* ================= Tarjetas ================= */
+function cardResultado(id, item) {
+  const f = fit(item);
+  return `<button class="card" data-item="${id}" data-origen="resultados">
+    <div class="card-media">${scene(item.kind)}<span class="badge-ia">IA</span></div>
+    <div class="card-body">
+      <h3>${item.nombre}</h3>
+      <p class="meta">${item.mat} · ${item.meta}</p>
+      <p class="price"><strong>${eur(item.precio)}</strong> aprox.</p>
+      <span class="tag ${f.ok ? 'ok' : 'warn'}">${f.corto}</span>
+    </div>
+  </button>`;
+}
+function cardInicio(id, item) {
+  const f = fit(item);
+  return `<button class="card" data-item="${id}" data-origen="inicio">
+    <div class="card-media">${scene(item.kind, id === 'denia' ? 'c' : 'a')}<span class="badge-ia">IA</span></div>
+    <div class="card-body">
+      <h3>${item.nombre}</h3>
+      <p class="meta">${item.mat} · ${item.meta}</p>
+      <div class="card-foot"><p class="price"><strong>${eur(item.precio)}</strong></p><span class="tag ${f.ok ? 'ok' : 'warn'}">${f.corto}</span></div>
+    </div>
+  </button>`;
+}
+
+function renderInicio() {
+  $('#home-cards').innerHTML = HOME_IDS.map(id => cardInicio(id, ITEMS[id])).join('');
+}
+
+function renderResultados() {
+  const items = RESULT_IDS.map(id => ({ id, item: { ...ITEMS[id], mat: state.material } }));
+  const orden = {
+    todas: null,
+    baratas: (a, b) => a.item.precio - b.item.precio,
+    rapidas: (a, b) => a.item.semanas - b.item.semanas,
+    ajuste: (a, b) => Math.max(a.item.w - state.ancho * 100, 0) - Math.max(b.item.w - state.ancho * 100, 0)
+      || Math.abs(state.ancho * 100 - a.item.w) - Math.abs(state.ancho * 100 - b.item.w)
+  }[state.filtro];
+  if (orden) items.sort(orden);
+  $('#res-cards').innerHTML = items.map(({ id, item }) => cardResultado(id, item)).join('');
+  $('#res-sub').textContent = `${state.tipo} · ${state.material.toLowerCase()} · para un muro de ${fmtM(state.ancho)} m`;
+  $$('#resultados [data-group="filtro"] .chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.value === state.filtro)));
+}
+
+function renderDetalle() {
+  const base = ITEMS[state.itemId];
+  const item = state.origen === 'resultados' ? { ...base, mat: state.material } : base;
+  const f = fit(item);
+  $('#hero').querySelector('.scene')?.remove();
+  $('#hero').insertAdjacentHTML('afterbegin', scene(item.kind, ['a', 'b', 'c'][state.vista]));
+  $('#d-nombre').textContent = item.nombre;
+  $('#d-sub').textContent = `${item.mat} natural · Acabado mate`;
+  $('#d-precio').textContent = eur(item.precio);
+  const fitEl = $('#d-fit');
+  fitEl.className = 'fit ' + (f.ok ? 'ok' : 'warn');
+  fitEl.innerHTML = `<svg class="ico"><use href="#${f.ok ? 'i-check' : 'i-alert'}"/></svg><span>${f.largo}</span>`;
+  $('#d-thumbs').innerHTML = ['a', 'b', 'c'].map((w, i) =>
+    `<button data-vista="${i}" aria-pressed="${i === state.vista}" aria-label="Vista ${i + 1}">${scene(item.kind, w)}</button>`).join('');
+  const filas = [
+    ['Medidas (An × Al × Fo)', item.dims],
+    ['Material', `${item.mat} macizo`],
+    ['Acabado', 'Barniz mate protector'],
+    ['Montaje', 'Incluido'],
+    ['Envío', item.envio]
+  ];
+  $('#d-spec').innerHTML = filas.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+}
+
+/* ================= Pasos ================= */
+function drawSteps(el, states) {
+  el.innerHTML = states.map(s => `<span class="${s === 'f' ? 'f' : s === 'h' ? 'h' : ''}"></span>`).join('');
+}
+
+/* ================= Navegación ================= */
+let current = 'inicio';
+let timers = [];
+const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+const ENTER = {
+  inicio: renderInicio,
+  resultados: renderResultados,
+  detalle: renderDetalle,
+  restricciones: () => {
+    $('#ancho').value = fmtM(state.ancho);
+    $('#alto').value = fmtM(state.alto);
+    setInvalid(false);
+  },
+  necesidades: () => { $('#credits-pill').textContent = `${state.credits} créditos`; }
+};
+
+function mostrar(id) {
+  if (current === 'generando' && id !== 'generando') clearTimers();
+  current = id;
+  $$('.screen').forEach(s => { s.hidden = s.id !== id; });
+  ENTER[id]?.();
+  const screen = $('#' + id);
+  const body = $('.body', screen);
+  if (body) body.scrollTop = 0;
+  const foco = $('h1[tabindex], h2[tabindex]', screen);
+  if (foco) foco.focus({ preventScroll: true });
+}
+
+function irInicio()         { mostrar('inicio'); }
+function irEspacio()        { mostrar('espacio'); }
+function irNecesidades()    { mostrar('necesidades'); }
+function irRestricciones()  { mostrar('restricciones'); }
+function irResultados()     { mostrar('resultados'); }
+function irDetalle(id, origen) {
+  state.itemId = id;
+  state.origen = origen;
+  state.vista = 0;
+  mostrar('detalle');
+}
+
+/* ---- Generación ---- */
+const MENSAJES = [
+  'Analizando tu espacio.',
+  'Buscando materiales y proporciones.',
+  'Componiendo las propuestas.',
+  'Ajustando las medidas al rincón.'
+];
+function paso(n) {
+  drawSteps($('#gen-steps'), [1, 2, 3, 4].map(i => (i <= n ? 'f' : 'e')));
+  $('#gen-paso').textContent = `Paso ${n} de 4`;
+  $('#gen-msg').textContent = MENSAJES[n - 1];
+}
+function generar() {
+  if (state.credits < 1) { aviso('No te quedan créditos', 'i-alert'); return; }
+  state.credits--;
+  mostrar('generando');
+  paso(1);
+  [625, 1250, 1875].forEach((ms, i) => timers.push(setTimeout(() => paso(i + 2), ms)));
+  timers.push(setTimeout(irResultados, 2500));
+}
+function cancelarGeneracion() {
+  clearTimers();
+  state.credits++;
+  irInicio();
+}
+
+/* ---- Restricciones ---- */
+function setInvalid(on) {
+  $('#err-medidas').hidden = !on;
+  ['#f-ancho', '#f-alto'].forEach(s => $(s).classList.toggle('invalid', on));
+  ['#ancho', '#alto'].forEach(s => $(s).setAttribute('aria-invalid', String(on)));
+}
+function validarMedidas() {
+  const a = parseM($('#ancho').value), h = parseM($('#alto').value);
+  const ok = [a, h].every(v => Number.isFinite(v) && v >= 0.3 && v <= 10);
+  setInvalid(!ok);
+  if (ok) { state.ancho = a; state.alto = h; }
+  return ok;
+}
+
+/* ---- Aviso ---- */
+let toastTimer;
+function aviso(msg, icono = 'i-check') {
+  $('#toast-msg').textContent = msg;
+  $('#toast .ico use').setAttribute('href', '#' + icono);
+  const t = $('#toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ================= Eventos ================= */
+const ACTIONS = {
+  continuar: irResultados,
+  generar: () => { if (validarMedidas()) generar(); },
+  regenerar: generar,
+  cancelar: cancelarGeneracion,
+  'atras-detalle': () => mostrar(state.origen),
+  guardar: () => { irInicio(); aviso('Guardado en proyecto'); },
+  'ver-espacio': () => aviso('Vista en tu espacio: próximamente', 'i-alert')
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-go],[data-action],[data-item],[data-vista],[data-soon],[data-group] [data-value]');
+  if (!el) return;
+
+  if (el.dataset.go) return mostrar(el.dataset.go);
+  if (el.dataset.action) return ACTIONS[el.dataset.action]?.();
+  if (el.dataset.item) return irDetalle(el.dataset.item, el.dataset.origen);
+  if (el.dataset.vista) { state.vista = Number(el.dataset.vista); return renderDetalle(); }
+  if (el.hasAttribute('data-soon')) return aviso('Próximamente', 'i-alert');
+
+  // Grupos de selección única (chips y opciones)
+  const key = el.closest('[data-group]').dataset.group;
+  state[key] = el.dataset.value;
+  $$('[data-value]', el.closest('[data-group]')).forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+  if (key === 'filtro') renderResultados();
+  if (key === 'tipo') $('#btn-necesidades').disabled = false;
+});
+
+// Referencias: teclado y vista previa
+$$('.ref').forEach(ref => {
+  const input = $('input', ref);
+  ref.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+    if (ref.dataset.url) URL.revokeObjectURL(ref.dataset.url);
+    ref.dataset.url = URL.createObjectURL(file);
+    ref.style.backgroundImage = `url("${ref.dataset.url}")`;
+    ref.classList.add('has');
+  });
+});
+
+// Descripción
+const desc = $('#desc');
+const contar = () => { state.desc = desc.value; $('#desc-count').textContent = `${desc.value.length} / 280`; };
+desc.addEventListener('input', contar);
+
+// Medidas: formato al salir del campo y limpiar error al escribir
+['#ancho', '#alto'].forEach(s => {
+  $(s).addEventListener('input', () => setInvalid(false));
+  $(s).addEventListener('blur', () => { const v = parseM($(s).value); if (Number.isFinite(v) && v > 0) $(s).value = fmtM(v); });
+  $(s).addEventListener('keydown', e => { if (e.key === 'Enter') ACTIONS.generar(); });
+});
+
+/* ================= Arranque ================= */
+(function init() {
+  const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  const hoy = new Date();
+  $('#fecha').textContent = `${dias[hoy.getDay()]}, ${hoy.getDate()} de ${meses[hoy.getMonth()]}`;
+
+  $('#th-salon').innerHTML = scene('living', 'c');
+  $('#th-estudio').innerHTML = scene('study', 'a');
+  $$('.steps[data-states]').forEach(el => drawSteps(el, el.dataset.states.split(',')));
+  desc.value = state.desc;
+  contar();
+  mostrar('inicio');
+})();
+</script>
+</body>
+</html>
